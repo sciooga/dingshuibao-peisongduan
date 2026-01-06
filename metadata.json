@@ -1,0 +1,7 @@
+{
+  "name": "订水宝 -- 商家端",
+  "description": "专业桶装水/瓶装水配送服务平台，支持水票套餐、企业订水、亲情快订及会员权益管理。",
+  "requestFramePermissions": [
+    "geolocation"
+  ]
+}
