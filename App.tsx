@@ -1,7 +1,7 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { HashRouter as Router, Routes, Route, useNavigate, useLocation, Navigate } from 'react-router-dom';
-import { LayoutGrid, Smartphone, ChevronLeft, Phone, Bell } from 'lucide-react';
+import { LayoutGrid, Smartphone, ChevronLeft, Phone, Bell, Bug, X } from 'lucide-react';
 
 // Pages
 import Dashboard from './pages/Dashboard';
@@ -60,6 +60,8 @@ const BottomNav: React.FC = () => {
 const Header: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const [showDebug, setShowDebug] = useState(false);
+
   const mainTabs = ['/', '/orders', '/finance', '/notices'];
   const showBack = !mainTabs.includes(location.pathname);
 
@@ -84,14 +86,79 @@ const Header: React.FC = () => {
     }
   };
 
+  const debugRoutes = [
+    { path: '/login', name: '登录页 (Login)' },
+    { path: '/', name: '工作台 (Dashboard)' },
+    { path: '/orders', name: '配送订单 (Orders)' },
+    { path: '/finance', name: '我的账目 (Finance)' },
+    { path: '/replenish', name: '采购补货 (Replenish)' },
+    { path: '/transactions', name: '账目明细 (Transactions)' },
+    { path: '/notices', name: '配送公告 (Notices)' },
+    { path: '/store-profile', name: '店铺信息 (StoreProfile)' },
+    { path: '/staff', name: '员工管理 (Staff)' },
+    { path: '/verify', name: '订单核销 (OrderVerify)' },
+    { path: '/logs', name: '操作日志 (OperationLogs)' },
+    { path: '/settings', name: '系统设置 (SettingsCenter)' },
+    { path: '/dispatch', name: '派单管理 (DispatchCenter)' },
+    { path: '/deposit', name: '桶押金中心 (DepositCenter)' },
+  ];
+
   return (
-    <div className="sticky top-0 bg-white z-40 px-4 h-12 flex items-center justify-between border-b border-gray-50 shadow-sm">
-      {showBack ? (
-        <button onClick={() => navigate(-1)} className="p-1 active:bg-gray-100 rounded-full transition-colors"><ChevronLeft size={24} /></button>
-      ) : <div className="w-8" />}
-      <h1 className="text-base font-black text-gray-900 tracking-tight">{getTitle()}</h1>
-      <div className="w-8" />
-    </div>
+    <>
+      <div className="sticky top-0 bg-white z-40 px-4 h-12 flex items-center justify-between border-b border-gray-50 shadow-sm">
+        {showBack ? (
+          <button onClick={() => navigate(-1)} className="p-1 active:bg-gray-100 rounded-full transition-colors"><ChevronLeft size={24} /></button>
+        ) : <div className="w-8" />}
+        
+        <h1 className="text-base font-black text-gray-900 tracking-tight">{getTitle()}</h1>
+        
+        <button 
+          onClick={() => setShowDebug(true)}
+          className="w-8 h-8 flex items-center justify-center text-gray-300 active:text-blue-600 active:bg-blue-50 rounded-full transition-colors"
+        >
+          <Bug size={18} />
+        </button>
+      </div>
+
+      {showDebug && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center px-8 bg-black/40 backdrop-blur-sm animate-in fade-in duration-200">
+          <div className="bg-white w-full max-w-sm max-h-[70vh] rounded-3xl shadow-2xl flex flex-col overflow-hidden animate-in zoom-in-95 duration-200">
+            <div className="p-4 border-b border-gray-100 bg-gray-50/50 flex justify-between items-center shrink-0">
+              <div className="flex items-center gap-2 text-gray-800">
+                <Bug size={18} className="text-blue-500" />
+                <span className="font-black text-sm">开发调试 - 页面跳转</span>
+              </div>
+              <button 
+                onClick={() => setShowDebug(false)}
+                className="w-8 h-8 flex items-center justify-center bg-gray-100 rounded-full active:bg-gray-200 text-gray-500"
+              >
+                <X size={16} />
+              </button>
+            </div>
+            
+            <div className="overflow-y-auto p-4 space-y-2">
+              {debugRoutes.map((route) => (
+                <button
+                  key={route.path}
+                  onClick={() => {
+                    navigate(route.path);
+                    setShowDebug(false);
+                  }}
+                  className={`w-full text-left px-4 py-3 rounded-xl text-xs font-bold flex items-center justify-between transition-all ${
+                    location.pathname === route.path 
+                      ? 'bg-blue-600 text-white shadow-md shadow-blue-200' 
+                      : 'bg-gray-50 text-gray-600 active:bg-gray-100'
+                  }`}
+                >
+                  <span>{route.name}</span>
+                  {location.pathname === route.path && <div className="w-1.5 h-1.5 bg-white rounded-full" />}
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+    </>
   );
 };
 
