@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
 import { Navigation, Clock, Package, ChevronRight, PhoneOff, AlertTriangle, BellRing, Phone } from 'lucide-react';
-import { OrderStatus, DeliveryOrder } from '../../types';
+import { OrderStatus, DeliveryOrder } from '../types';
 
 const DeliveryOrders: React.FC = () => {
   const [activeTab, setActiveTab] = useState('待接单');
