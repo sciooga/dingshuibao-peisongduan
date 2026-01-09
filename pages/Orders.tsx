@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { Navigation, Clock, Package, ChevronRight, PhoneOff, AlertTriangle, BellRing, Phone } from 'lucide-react';
+import { Navigation, Clock, Package, ChevronRight, PhoneOff, AlertTriangle, BellRing, Phone, MessageSquareQuote } from 'lucide-react';
 import { OrderStatus, DeliveryOrder } from '../types';
 
 const DeliveryOrders: React.FC = () => {
@@ -26,7 +26,8 @@ const DeliveryOrders: React.FC = () => {
       deliveryTime: '立即配送',
       status: OrderStatus.PENDING_DELIVERY,
       commission: 7.5,
-      source: '美团订单'
+      source: '美团订单',
+      remark: '请帮忙带一包软盒中华，到了付钱'
     },
     {
       id: '2410210002',
@@ -38,7 +39,8 @@ const DeliveryOrders: React.FC = () => {
       deliveryTime: '18:00 前',
       status: OrderStatus.ACCEPTED,
       commission: 6.0,
-      source: '平台订单'
+      source: '平台订单',
+      remark: '家里有老人午睡，到了请轻轻敲门，不要打电话'
     },
     {
       id: '2410210003',
@@ -169,6 +171,17 @@ const DeliveryOrders: React.FC = () => {
                   ))}
                 </p>
               </div>
+
+              {/* Row 3.5: Remark (New) */}
+              {order.remark && (
+                <div className="py-2 px-3 bg-orange-50 rounded-lg border border-orange-100 flex items-start gap-2">
+                  <MessageSquareQuote size={14} className="text-orange-500 shrink-0 mt-0.5" />
+                  <p className="text-xs font-bold text-orange-700 break-words leading-tight">
+                    <span className="opacity-70 mr-1">顾客备注:</span>
+                    {order.remark}
+                  </p>
+                </div>
+              )}
 
               {/* Row 4: Source Tag + Utility Buttons */}
               <div className="flex justify-between items-center pt-2 border-t border-gray-50">

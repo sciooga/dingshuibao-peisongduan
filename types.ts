@@ -27,6 +27,7 @@ export interface Product {
   isPackage?: boolean;
   savings?: number;
   packageDetail?: string; // e.g. "共23桶", "共144瓶"
+  details?: string; // HTML or Markdown content for product description
 }
 
 export interface User {
@@ -63,4 +64,5 @@ export interface DeliveryOrder {
   status: OrderStatus;
   commission: number;
   source?: '平台订单' | '美团订单' | '饿了么订单';
+  remark?: string;
 }

@@ -1,9 +1,11 @@
 
 import React, { useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import { Settings, Printer, ImageIcon, Zap, ChevronRight, PlusCircle, AlertTriangle, Save } from 'lucide-react';
 
 const SettingsCenter: React.FC = () => {
-  const [activeTab, setActiveTab] = useState('params');
+  const location = useLocation();
+  const [activeTab, setActiveTab] = useState((location.state as any)?.initialTab || 'params');
 
   return (
     <div className="min-h-full bg-gray-50 flex flex-col pb-20">

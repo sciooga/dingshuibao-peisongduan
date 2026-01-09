@@ -21,6 +21,9 @@ import OperationLogs from './pages/OperationLogs';
 import SettingsCenter from './pages/SettingsCenter';
 import DispatchCenter from './pages/DispatchCenter';
 import DepositCenter from './pages/DepositCenter';
+import ProductManagement from './pages/ProductManagement';
+import OrderManagement from './pages/OrderManagement';
+import OrderDetail from './pages/OrderDetail';
 
 const BottomNav: React.FC = () => {
   const navigate = useNavigate();
@@ -34,7 +37,8 @@ const BottomNav: React.FC = () => {
   ];
 
   const hideOn = ['/login'];
-  const isDetailPage = location.pathname.startsWith('/notices/') && location.pathname !== '/notices';
+  const isDetailPage = (location.pathname.startsWith('/notices/') && location.pathname !== '/notices') || 
+                       (location.pathname.startsWith('/order-management/') && location.pathname !== '/order-management');
   
   if (hideOn.includes(location.pathname) || isDetailPage) return null;
 
@@ -46,7 +50,7 @@ const BottomNav: React.FC = () => {
           <button
             key={tab.path}
             onClick={() => navigate(tab.path)}
-            className={`flex flex-col items-center gap-1 transition-colors ${isActive ? 'text-blue-600' : 'text-gray-400'}`}
+            className={`flex-col items-center gap-1 transition-colors flex ${isActive ? 'text-blue-600' : 'text-gray-400'}`}
           >
             {tab.icon}
             <span className="text-[10px] sm:text-xs font-medium">{tab.label}</span>
@@ -67,6 +71,8 @@ const Header: React.FC = () => {
 
   const getTitle = () => {
     if (location.pathname.startsWith('/notices/') && location.pathname !== '/notices') return '公告详情';
+    if (location.pathname.startsWith('/order-management/') && location.pathname !== '/order-management') return '订单详情';
+    
     switch (location.pathname) {
       case '/': return '工作台';
       case '/orders': return '配送订单';
@@ -82,6 +88,8 @@ const Header: React.FC = () => {
       case '/settings': return '系统设置';
       case '/dispatch': return '派单管理';
       case '/deposit': return '桶押金中心';
+      case '/products': return '商品管理';
+      case '/order-management': return '销售订单';
       default: return '订水驿站';
     }
   };
@@ -101,6 +109,8 @@ const Header: React.FC = () => {
     { path: '/settings', name: '系统设置 (SettingsCenter)' },
     { path: '/dispatch', name: '派单管理 (DispatchCenter)' },
     { path: '/deposit', name: '桶押金中心 (DepositCenter)' },
+    { path: '/products', name: '商品管理 (ProductManagement)' },
+    { path: '/order-management', name: '订单管理 (OrderManagement)' },
   ];
 
   return (
@@ -186,6 +196,9 @@ const App: React.FC = () => {
             <Route path="/settings" element={<SettingsCenter />} />
             <Route path="/dispatch" element={<DispatchCenter />} />
             <Route path="/deposit" element={<DepositCenter />} />
+            <Route path="/products" element={<ProductManagement />} />
+            <Route path="/order-management" element={<OrderManagement />} />
+            <Route path="/order-management/:id" element={<OrderDetail />} />
 
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>

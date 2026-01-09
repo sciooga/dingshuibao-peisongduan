@@ -20,7 +20,10 @@ import {
   ArrowRightLeft,
   ShieldCheck,
   User,
-  Image as ImageIcon
+  Image as ImageIcon,
+  Printer,
+  ShoppingBag,
+  FileText
 } from 'lucide-react';
 
 const StoreDashboard: React.FC = () => {
@@ -49,9 +52,14 @@ const StoreDashboard: React.FC = () => {
 
   const quickActions = [
     { label: '扫码核销', icon: <Scan size={24} />, path: '/verify', color: 'bg-blue-500' },
-    { label: '派单管理', icon: <ArrowRightLeft size={24} />, path: '/dispatch', color: 'bg-indigo-500' },
+    { label: '订单管理', icon: <FileText size={24} />, path: '/order-management', color: 'bg-indigo-500' },
+    { label: '派单管理', icon: <ArrowRightLeft size={24} />, path: '/dispatch', color: 'bg-purple-500' },
+    { label: '商品管理', icon: <ShoppingBag size={24} />, path: '/products', color: 'bg-pink-500' },
+    
     { label: '采购申请', icon: <Package size={24} />, path: '/replenish', color: 'bg-orange-500' },
     { label: '账目提现', icon: <Wallet size={24} />, path: '/finance', color: 'bg-green-500' },
+    { label: '打印机', icon: <Printer size={24} />, path: '/settings', color: 'bg-cyan-500', state: { initialTab: 'printer' } },
+    { label: '广告设置', icon: <ImageIcon size={24} />, path: '/settings', color: 'bg-teal-500', state: { initialTab: 'ads' } },
   ];
 
   const managementGroups = [
@@ -126,13 +134,13 @@ const StoreDashboard: React.FC = () => {
         {quickActions.map((action, i) => (
           <button 
             key={i}
-            onClick={() => navigate(action.path)}
+            onClick={() => navigate(action.path, { state: action.state })}
             className="flex flex-col items-center gap-2 group active:scale-90 transition-transform"
           >
             <div className={`${action.color} w-12 h-12 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-blue-100 group-active:shadow-none`}>
               {action.icon}
             </div>
-            <span className="text-[11px] font-black text-gray-700">{action.label}</span>
+            <span className="text-[11px] font-black text-gray-700 whitespace-nowrap">{action.label}</span>
           </button>
         ))}
       </div>
@@ -166,3 +174,4 @@ const StoreDashboard: React.FC = () => {
 };
 
 export default StoreDashboard;
+    
