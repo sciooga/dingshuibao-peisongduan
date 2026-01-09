@@ -24,13 +24,14 @@ import DepositCenter from './pages/DepositCenter';
 import ProductManagement from './pages/ProductManagement';
 import OrderManagement from './pages/OrderManagement';
 import OrderDetail from './pages/OrderDetail';
+import Withdraw from './pages/Withdraw';
 
 const BottomNav: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
   const tabs = [
-    { path: '/orders', label: '配送', icon: <Phone size={22} /> },
+    { path: '/orders', label: '接单大厅', icon: <Phone size={22} /> },
     { path: '/notices', label: '公告', icon: <Bell size={22} /> },
     { path: '/', label: '工作台', icon: <LayoutGrid size={22} /> },
     { path: '/finance', label: '账目', icon: <Smartphone size={22} /> },
@@ -75,7 +76,7 @@ const Header: React.FC = () => {
     
     switch (location.pathname) {
       case '/': return '工作台';
-      case '/orders': return '配送订单';
+      case '/orders': return '接单大厅';
       case '/finance': return '我的账目';
       case '/replenish': return '采购补货';
       case '/transactions': return '账目明细';
@@ -90,6 +91,7 @@ const Header: React.FC = () => {
       case '/deposit': return '桶押金中心';
       case '/products': return '商品管理';
       case '/order-management': return '销售订单';
+      case '/withdraw': return '余额提现';
       default: return '订水驿站';
     }
   };
@@ -97,7 +99,7 @@ const Header: React.FC = () => {
   const debugRoutes = [
     { path: '/login', name: '登录页 (Login)' },
     { path: '/', name: '工作台 (Dashboard)' },
-    { path: '/orders', name: '配送订单 (Orders)' },
+    { path: '/orders', name: '接单大厅 (Orders)' },
     { path: '/finance', name: '我的账目 (Finance)' },
     { path: '/replenish', name: '采购补货 (Replenish)' },
     { path: '/transactions', name: '账目明细 (Transactions)' },
@@ -111,6 +113,7 @@ const Header: React.FC = () => {
     { path: '/deposit', name: '桶押金中心 (DepositCenter)' },
     { path: '/products', name: '商品管理 (ProductManagement)' },
     { path: '/order-management', name: '订单管理 (OrderManagement)' },
+    { path: '/withdraw', name: '余额提现 (Withdraw)' },
   ];
 
   return (
@@ -199,6 +202,7 @@ const App: React.FC = () => {
             <Route path="/products" element={<ProductManagement />} />
             <Route path="/order-management" element={<OrderManagement />} />
             <Route path="/order-management/:id" element={<OrderDetail />} />
+            <Route path="/withdraw" element={<Withdraw />} />
 
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
