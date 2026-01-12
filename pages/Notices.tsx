@@ -1,13 +1,13 @@
 
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Bell, ChevronRight, Megaphone, Info, AlertTriangle, Trophy } from 'lucide-react';
+import { Bell, ChevronRight, Megaphone, Info, AlertTriangle, Trophy, Store, ShieldAlert } from 'lucide-react';
 
 interface Notice {
   id: string;
   title: string;
   date: string;
-  category: 'system' | 'alert' | 'reward';
+  category: 'system' | 'alert' | 'reward' | 'transfer' | 'violation';
   summary: string;
   isRead: boolean;
 }
@@ -16,7 +16,7 @@ const DeliveryNotices: React.FC = () => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('全部');
 
-  const categories = ['全部', '系统公告', '预警信息', '奖励政策'];
+  const categories = ['全部', '系统公告', '预警信息', '奖励政策', '水站转让', '违规公告'];
 
   const mockNotices: Notice[] = [
     {
@@ -50,6 +50,22 @@ const DeliveryNotices: React.FC = () => {
       category: 'system',
       summary: '全新扫码核销组件已集成至配送端，解决部分用户纸质水票无法验证的问题...',
       isRead: true
+    },
+    {
+      id: '5',
+      title: '【转让】盘龙区核心地段精品水站急转',
+      date: '2024-10-23 09:00',
+      category: 'transfer',
+      summary: '因个人原因回老家发展，现有稳定客源500+，接手即盈利，有意向请联系...',
+      isRead: false
+    },
+    {
+      id: '6',
+      title: '关于某配送站“虚假配送”行为的处罚通报',
+      date: '2024-10-23 14:00',
+      category: 'violation',
+      summary: '经核实，XX水站存在多次未送达即点击已完成的违规行为，现处以罚款并降级处理...',
+      isRead: false
     }
   ];
 
@@ -58,6 +74,8 @@ const DeliveryNotices: React.FC = () => {
     if (activeTab === '系统公告') return notice.category === 'system';
     if (activeTab === '预警信息') return notice.category === 'alert';
     if (activeTab === '奖励政策') return notice.category === 'reward';
+    if (activeTab === '水站转让') return notice.category === 'transfer';
+    if (activeTab === '违规公告') return notice.category === 'violation';
     return true;
   });
 
@@ -66,6 +84,8 @@ const DeliveryNotices: React.FC = () => {
       case 'system': return <Info size={16} className="text-blue-500" />;
       case 'alert': return <AlertTriangle size={16} className="text-orange-500" />;
       case 'reward': return <Trophy size={16} className="text-yellow-500" />;
+      case 'transfer': return <Store size={16} className="text-purple-500" />;
+      case 'violation': return <ShieldAlert size={16} className="text-red-500" />;
       default: return <Bell size={16} className="text-gray-400" />;
     }
   };
