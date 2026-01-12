@@ -25,6 +25,7 @@ import ProductManagement from './pages/ProductManagement';
 import OrderManagement from './pages/OrderManagement';
 import OrderDetail from './pages/OrderDetail';
 import Withdraw from './pages/Withdraw';
+import ManualOrder from './pages/ManualOrder';
 
 const BottomNav: React.FC = () => {
   const navigate = useNavigate();
@@ -92,6 +93,7 @@ const Header: React.FC = () => {
       case '/products': return '商品管理';
       case '/order-management': return '销售订单';
       case '/withdraw': return '余额提现';
+      case '/manual-order': return '手动录单';
       default: return '订水驿站';
     }
   };
@@ -114,6 +116,7 @@ const Header: React.FC = () => {
     { path: '/products', name: '商品管理 (ProductManagement)' },
     { path: '/order-management', name: '订单管理 (OrderManagement)' },
     { path: '/withdraw', name: '余额提现 (Withdraw)' },
+    { path: '/manual-order', name: '手动录单 (ManualOrder)' },
   ];
 
   return (
@@ -203,6 +206,7 @@ const App: React.FC = () => {
             <Route path="/order-management" element={<OrderManagement />} />
             <Route path="/order-management/:id" element={<OrderDetail />} />
             <Route path="/withdraw" element={<Withdraw />} />
+            <Route path="/manual-order" element={<ManualOrder />} />
 
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>

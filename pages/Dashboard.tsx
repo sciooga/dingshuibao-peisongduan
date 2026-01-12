@@ -23,7 +23,8 @@ import {
   Image as ImageIcon,
   Printer,
   ShoppingBag,
-  FileText
+  FileText,
+  FilePlus
 } from 'lucide-react';
 
 const StoreDashboard: React.FC = () => {
@@ -68,6 +69,7 @@ const StoreDashboard: React.FC = () => {
       items: [
         { label: '店铺信息', sub: '名称/位置/时间', icon: <Store className="text-blue-500" />, path: '/store-profile' },
         { label: '员工管理', sub: '账号/权限/管理', icon: <Users className="text-purple-500" />, path: '/staff' },
+        { label: '手动录单', sub: '快速代客录单/指派配送', icon: <FilePlus className="text-orange-500" />, path: '/manual-order' },
         { label: '派单调度', sub: '手动派单/转派大厅', icon: <ArrowRightLeft className="text-indigo-500" />, path: '/dispatch' },
       ]
     },
