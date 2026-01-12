@@ -1,19 +1,10 @@
 
 import React, { useState } from 'react';
-import { Navigation, Clock, Package, ChevronRight, PhoneOff, AlertTriangle, BellRing, Phone, MessageSquareQuote } from 'lucide-react';
+import { Navigation, Clock, Package, ChevronRight, PhoneOff, AlertTriangle, BellRing, Phone, MessageSquareQuote, XCircle } from 'lucide-react';
 import { OrderStatus, DeliveryOrder } from '../types';
 
 const DeliveryOrders: React.FC = () => {
   const [activeTab, setActiveTab] = useState('待接单');
-  
-  const tabs = [
-    { label: '待接单', count: 3 },
-    { label: '已接单', count: 1 },
-    { label: '配送中', count: 2 },
-    { label: '已完成', count: 48 },
-    { label: '催单', count: 1 },
-    { label: '异常订单', count: 0 }
-  ];
 
   const mockDeliveryOrders: DeliveryOrder[] = [
     {
@@ -55,8 +46,41 @@ const DeliveryOrders: React.FC = () => {
       status: OrderStatus.PENDING_DELIVERY,
       commission: 25.0,
       source: '饿了么订单'
+    },
+    {
+      id: '2410210004',
+      customerName: '王小二',
+      customerPhone: '13666666666',
+      address: '盘龙区 白塔路 131 号汇都国际 B 座',
+      floor: '电梯直达',
+      items: [{ name: '珍茗金龙水 18.9L', qty: 1 }],
+      deliveryTime: '已取消',
+      status: OrderStatus.CANCELLED,
+      commission: 0.0,
+      source: '小程序订单',
+      remark: '用户自行取消：点错了，不想要了'
     }
   ];
+  
+  const tabs = [
+    { label: '待接单', count: mockDeliveryOrders.filter(o => o.status === OrderStatus.PENDING_DELIVERY).length },
+    { label: '已接单', count: mockDeliveryOrders.filter(o => o.status === OrderStatus.ACCEPTED).length },
+    { label: '配送中', count: mockDeliveryOrders.filter(o => o.status === OrderStatus.DELIVERING).length },
+    { label: '已完成', count: 48 },
+    { label: '已退单', count: mockDeliveryOrders.filter(o => o.status === OrderStatus.CANCELLED).length },
+    { label: '催单', count: 1 },
+    { label: '异常订单', count: 0 }
+  ];
+
+  const filteredOrders = mockDeliveryOrders.filter(order => {
+     if (activeTab === '待接单') return order.status === OrderStatus.PENDING_DELIVERY;
+     if (activeTab === '已接单') return order.status === OrderStatus.ACCEPTED;
+     if (activeTab === '配送中') return order.status === OrderStatus.DELIVERING;
+     if (activeTab === '已完成') return order.status === OrderStatus.COMPLETED;
+     if (activeTab === '已退单') return order.status === OrderStatus.CANCELLED || order.status === OrderStatus.REFUNDING;
+     if (activeTab === '催单') return order.id === '2410210001';
+     return false;
+  });
 
   const updateStatus = (id: string, current: OrderStatus) => {
     let next: OrderStatus;
@@ -118,7 +142,7 @@ const DeliveryOrders: React.FC = () => {
 
       {/* Orders List */}
       <div className="p-2 space-y-3 pb-24">
-        {mockDeliveryOrders.map(order => (
+        {filteredOrders.map(order => (
           <div key={order.id} className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
             <div className="p-4 space-y-3">
               
@@ -134,25 +158,30 @@ const DeliveryOrders: React.FC = () => {
                       用户已催
                     </span>
                   )}
+                  {order.status === OrderStatus.CANCELLED && (
+                    <span className="text-[9px] bg-gray-100 text-gray-500 px-1.5 py-0.5 rounded font-black border border-gray-200">
+                      已取消
+                    </span>
+                  )}
                 </div>
                 <div className="flex items-baseline gap-1">
                   <span className="text-xs font-bold text-gray-400">预计收入:</span>
-                  <span className="text-base font-black text-orange-600">¥{order.commission}</span>
+                  <span className={`text-base font-black ${order.status === OrderStatus.CANCELLED ? 'text-gray-400 line-through' : 'text-orange-600'}`}>¥{order.commission}</span>
                 </div>
               </div>
 
               {/* Row 2: Address */}
               <div className="flex items-start justify-between gap-3 bg-gray-50 p-3 rounded-xl border border-gray-50">
                 <div className="flex-1 min-w-0">
-                  <p className="text-xs text-gray-800 font-bold leading-relaxed break-words">
-                    <span className={`inline-block mr-1.5 text-[9px] px-1.5 py-0.5 rounded font-black leading-none align-baseline ${isElevator(order.floor) ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+                  <p className={`text-xs text-gray-800 font-bold leading-relaxed break-words ${order.status === OrderStatus.CANCELLED ? 'text-gray-400' : ''}`}>
+                    <span className={`inline-block mr-1.5 text-[9px] px-1.5 py-0.5 rounded font-black leading-none align-baseline ${order.status === OrderStatus.CANCELLED ? 'bg-gray-200 text-gray-500' : (isElevator(order.floor) ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700')}`}>
                       {isElevator(order.floor) ? '有电梯' : '无电梯'}
                     </span>
                     {order.address}
                   </p>
                   <p className="text-[10px] text-gray-400 mt-1">{order.floor}</p>
                 </div>
-                <button className="flex flex-col items-center gap-0.5 text-blue-500 active:opacity-60 shrink-0">
+                <button className={`flex flex-col items-center gap-0.5 text-blue-500 active:opacity-60 shrink-0 ${order.status === OrderStatus.CANCELLED ? 'opacity-50 pointer-events-none' : ''}`}>
                   <div className="p-2 bg-blue-50 rounded-full">
                     <Navigation size={16} fill="currentColor" />
                   </div>
@@ -163,7 +192,7 @@ const DeliveryOrders: React.FC = () => {
               {/* Row 3: Items */}
               <div className="py-1 flex items-center gap-2">
                 <Package size={14} className="text-gray-400 shrink-0" />
-                <p className="text-xs font-bold text-gray-700 truncate">
+                <p className={`text-xs font-bold truncate ${order.status === OrderStatus.CANCELLED ? 'text-gray-400' : 'text-gray-700'}`}>
                   {order.items.map((i, idx) => (
                     <span key={idx}>
                       {i.name} x{i.qty}{idx < order.items.length - 1 ? '、' : ''}
@@ -172,12 +201,14 @@ const DeliveryOrders: React.FC = () => {
                 </p>
               </div>
 
-              {/* Row 3.5: Remark (New) */}
+              {/* Row 3.5: Remark */}
               {order.remark && (
-                <div className="py-2 px-3 bg-orange-50 rounded-lg border border-orange-100 flex items-start gap-2">
-                  <MessageSquareQuote size={14} className="text-orange-500 shrink-0 mt-0.5" />
-                  <p className="text-xs font-bold text-orange-700 break-words leading-tight">
-                    <span className="opacity-70 mr-1">顾客备注:</span>
+                <div className={`py-2 px-3 rounded-lg border flex items-start gap-2 ${order.status === OrderStatus.CANCELLED ? 'bg-gray-50 border-gray-100' : 'bg-orange-50 border-orange-100'}`}>
+                  <MessageSquareQuote size={14} className={`${order.status === OrderStatus.CANCELLED ? 'text-gray-400' : 'text-orange-500'} shrink-0 mt-0.5`} />
+                  <p className={`text-xs font-bold break-words leading-tight ${order.status === OrderStatus.CANCELLED ? 'text-gray-500' : 'text-orange-700'}`}>
+                    <span className="opacity-70 mr-1">
+                        {order.status === OrderStatus.CANCELLED ? '取消原因:' : '顾客备注:'}
+                    </span>
                     {order.remark}
                   </p>
                 </div>
@@ -186,56 +217,75 @@ const DeliveryOrders: React.FC = () => {
               {/* Row 4: Source Tag + Utility Buttons */}
               <div className="flex justify-between items-center pt-2 border-t border-gray-50">
                 <div className="flex items-center gap-2">
-                  {/* Source Tag */}
-                  <span className={`text-[9px] px-2 py-1 rounded-md font-black shadow-sm ${getSourceColor(order.source)}`}>
+                  <span className={`text-[9px] px-2 py-1 rounded-md font-black shadow-sm ${order.status === OrderStatus.CANCELLED ? 'bg-gray-200 text-gray-500' : getSourceColor(order.source)}`}>
                     {order.source || '平台订单'}
                   </span>
                   
-                  {/* Phone Error Button */}
-                  <button 
-                    onClick={() => reportPhoneError(order.id)}
-                    className="flex items-center gap-1 text-[9px] text-red-500 font-bold border border-red-50 px-2 py-1 rounded-md active:bg-red-50"
-                  >
-                    号码错误
-                  </button>
+                  {order.status !== OrderStatus.CANCELLED && (
+                    <button 
+                      onClick={() => reportPhoneError(order.id)}
+                      className="flex items-center gap-1 text-[9px] text-red-500 font-bold border border-red-50 px-2 py-1 rounded-md active:bg-red-50"
+                    >
+                      号码错误
+                    </button>
+                  )}
                 </div>
 
-                {/* Call Button */}
-                <a 
-                  href={`tel:${order.customerPhone}`} 
-                  className="flex items-center gap-1 px-3 py-1 rounded-md border border-gray-200 text-[10px] font-bold text-gray-600 active:bg-gray-50 transition-all"
-                >
-                  <Phone size={12} /> 拨打电话
-                </a>
+                {order.status !== OrderStatus.CANCELLED && (
+                  <a 
+                    href={`tel:${order.customerPhone}`} 
+                    className="flex items-center gap-1 px-3 py-1 rounded-md border border-gray-200 text-[10px] font-bold text-gray-600 active:bg-gray-50 transition-all"
+                  >
+                    <Phone size={12} /> 拨打电话
+                  </a>
+                )}
               </div>
 
               {/* Row 5: Primary Action Button (Full Width) */}
               <div className="pt-1">
-                <button 
-                  onClick={() => updateStatus(order.id, order.status)}
-                  className={`w-full py-3.5 rounded-xl text-sm font-black shadow-md active:scale-[0.98] transition-all flex items-center justify-center gap-2 ${
-                    order.status === OrderStatus.PENDING_DELIVERY 
-                    ? 'bg-blue-600 text-white shadow-blue-100' 
-                    : (order.status === OrderStatus.ACCEPTED ? 'bg-orange-500 text-white shadow-orange-100' : 'bg-green-600 text-white shadow-green-100')
-                  }`}
-                >
-                  {order.status === OrderStatus.PENDING_DELIVERY ? '立即接单' : (order.status === OrderStatus.ACCEPTED ? '开始配送' : '确认送达')}
-                </button>
+                {order.status === OrderStatus.CANCELLED ? (
+                     <button 
+                        disabled
+                        className="w-full py-3.5 rounded-xl text-sm font-black bg-gray-100 text-gray-400 cursor-not-allowed flex items-center justify-center gap-2"
+                     >
+                        <XCircle size={16} /> 订单已取消
+                     </button>
+                ) : (
+                    <button 
+                    onClick={() => updateStatus(order.id, order.status)}
+                    className={`w-full py-3.5 rounded-xl text-sm font-black shadow-md active:scale-[0.98] transition-all flex items-center justify-center gap-2 ${
+                        order.status === OrderStatus.PENDING_DELIVERY 
+                        ? 'bg-blue-600 text-white shadow-blue-100' 
+                        : (order.status === OrderStatus.ACCEPTED ? 'bg-orange-500 text-white shadow-orange-100' : 'bg-green-600 text-white shadow-green-100')
+                    }`}
+                    >
+                    {order.status === OrderStatus.PENDING_DELIVERY ? '立即接单' : (order.status === OrderStatus.ACCEPTED ? '开始配送' : '确认送达')}
+                    </button>
+                )}
               </div>
 
             </div>
           </div>
         ))}
+
+        {filteredOrders.length === 0 && (
+           <div className="py-20 flex flex-col items-center justify-center text-gray-300">
+               <Package size={48} strokeWidth={1} />
+               <p className="text-xs mt-2 font-medium">暂无{activeTab}订单</p>
+           </div>
+        )}
       </div>
 
-      {/* Simplified Tracking Indicator */}
-      <div className="fixed bottom-20 left-4 right-4 bg-gray-900/95 backdrop-blur-md text-white py-2 px-4 rounded-xl shadow-lg flex items-center justify-between z-40 border border-white/5">
-         <div className="flex items-center gap-2">
-            <div className="w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse" />
-            <span className="text-[10px] font-medium opacity-80">定位正常: 王师傅-007</span>
-         </div>
-         <ChevronRight size={12} className="opacity-30" />
-      </div>
+      {/* Simplified Tracking Indicator - Only show if active orders exist */}
+      {mockDeliveryOrders.some(o => o.status === OrderStatus.ACCEPTED || o.status === OrderStatus.DELIVERING) && (
+        <div className="fixed bottom-20 left-4 right-4 bg-gray-900/95 backdrop-blur-md text-white py-2 px-4 rounded-xl shadow-lg flex items-center justify-between z-40 border border-white/5">
+            <div className="flex items-center gap-2">
+                <div className="w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse" />
+                <span className="text-[10px] font-medium opacity-80">定位正常: 王师傅-007</span>
+            </div>
+            <ChevronRight size={12} className="opacity-30" />
+        </div>
+      )}
     </div>
   );
 };

@@ -59,7 +59,7 @@ const StoreDashboard: React.FC = () => {
     { label: '采购申请', icon: <Package size={24} />, path: '/replenish', color: 'bg-orange-500' },
     { label: '账目提现', icon: <Wallet size={24} />, path: '/finance', color: 'bg-green-500' },
     { label: '打印机', icon: <Printer size={24} />, path: '/settings', color: 'bg-cyan-500', state: { initialTab: 'printer' } },
-    { label: '广告设置', icon: <ImageIcon size={24} />, path: '/settings', color: 'bg-teal-500', state: { initialTab: 'ads' } },
+    { label: '保证金', icon: <ShieldCheck size={24} />, path: '/deposit', color: 'bg-teal-500' },
   ];
 
   const managementGroups = [
@@ -174,4 +174,3 @@ const StoreDashboard: React.FC = () => {
 };
 
 export default StoreDashboard;
-    

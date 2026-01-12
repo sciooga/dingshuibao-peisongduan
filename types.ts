@@ -63,6 +63,6 @@ export interface DeliveryOrder {
   deliveryTime: string;
   status: OrderStatus;
   commission: number;
-  source?: '平台订单' | '美团订单' | '饿了么订单';
+  source?: '平台订单' | '美团订单' | '饿了么订单' | '小程序订单';
   remark?: string;
 }
